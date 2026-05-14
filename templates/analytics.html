@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f7f8fc; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        a { text-decoration: none; color: #1f4ed8; }
+    </style>
+</head>
+<body>
+    <h1>📊 Platform Analytics</h1>
+    <p><a href="/">← Back to Home</a></p>
+
+    <div class="grid">
+        <div class="card"><h3>Total Topics</h3><p>{{ total_topics }}</p></div>
+        <div class="card"><h3>Total Arguments</h3><p>{{ total_arguments }}</p></div>
+        <div class="card"><h3>Total Comments</h3><p>{{ total_comments }}</p></div>
+        <div class="card"><h3>Predicted Pro</h3><p>{{ pro_count }}</p></div>
+        <div class="card"><h3>Predicted Con</h3><p>{{ con_count }}</p></div>
+        <div class="card"><h3>High Toxicity Arguments</h3><p>{{ toxic_high }}</p></div>
+        <div class="card"><h3>Arguments With Fallacy</h3><p>{{ fallacy_count }}</p></div>
+    </div>
+</body>
+</html>

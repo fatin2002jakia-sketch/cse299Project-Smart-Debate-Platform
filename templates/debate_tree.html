@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debate Tree</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+            background: #f7f8fc;
+        }
+
+        .card {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .main-argument {
+            border-left: 4px solid #1f4ed8;
+            padding-left: 12px;
+            margin-top: 10px;
+        }
+
+        .ai-reply {
+            margin-left: 35px;
+            border-left: 4px solid #dc2626;
+            padding-left: 12px;
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .manual-reply {
+            margin-left: 70px;
+            border-left: 4px solid #16a34a;
+            padding-left: 12px;
+            margin-top: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1f4ed8;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🌳 Debate Tree</h1>
+<p><a href="/">← Back to Home</a></p>
+
+{% for arg in arguments %}
+<div class="card">
+
+    <h3>Topic: {{ arg['title'] }}</h3>
+
+    <div class="main-argument">
+        <p><strong>Main Argument:</strong></p>
+        <p>{{ arg['content'] }}</p>
+        <p><strong>User Side:</strong> {{ arg['side'] }}</p>
+    </div>
+
+    <div class="ai-reply">
+        <p><strong>🤖 AI Opponent Reply:</strong></p>
+        <p>{{ arg['ai_reply'] if arg['ai_reply'] else "No AI opponent reply available." }}</p>
+    </div>
+
+    {% for reply in replies %}
+        {% if reply['argument_id'] == arg['id'] %}
+            <div class="manual-reply">
+                <p><strong>{{ reply['side'] }} Reply:</strong></p>
+                <p>{{ reply['content'] }}</p>
+                <small>{{ reply['created_at'] }}</small>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+</div>
+{% endfor %}
+
+</body>
+</html>

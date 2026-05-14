@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Debate Platform</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+            background: #f7f8fc;
+        }
+
+        .topnav {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .topnav a {
+            text-decoration: none;
+            background: #1f4ed8;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+        }
+
+        .section {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .argument-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .strongest {
+            border: 2px solid green;
+            background: #eefdee;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-right: 6px;
+        }
+
+        .pro { background: #dbeafe; color: #1d4ed8; }
+        .con { background: #fee2e2; color: #b91c1c; }
+
+        textarea, input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+        }
+
+        button {
+            background: #1f4ed8;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .comment {
+            background: #f3f4f6;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .meta {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🧠 Smart Debate Platform</h1>
+
+<div class="topnav">
+    <a href="/">Home</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/analytics">Analytics</a>
+    <a href="/summary">Summary</a>
+    <a href="/demo">TF-IDF Demo</a>
+    <a href="/winner">Winner</a>
+    <a href="/debate_tree">Debate Tree</a>
+</div>
+
+<!-- ADD TOPIC -->
+<div class="section">
+<h2>Add Topic</h2>
+<form method="POST" action="/add_topic">
+    <input type="text" name="title" placeholder="Topic Title" required>
+    <button>Add Topic</button>
+</form>
+</div>
+
+<!-- TOPICS -->
+<div class="section">
+<h2>Topics</h2>
+<ul>
+    {% for topic in topics %}
+        <li>{{ topic['title'] }}</li>
+    {% endfor %}
+</ul>
+</div>
+
+<!-- ADD ARGUMENT -->
+<div class="section">
+<h2>Add Argument</h2>
+<form method="POST" action="/add_argument">
+    <label>User Name:</label>
+     <input type="text" name="username" required placeholder="Enter your name">
+
+    <label>Topic:</label>
+    <select name="topic_id">
+        {% for topic in topics %}
+            <option value="{{ topic['id'] }}">{{ topic['title'] }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Side:</label>
+    <select name="side">
+        <option value="Pro">Pro</option>
+        <option value="Con">Con</option>
+    </select>
+
+    <label>Content:</label>
+    <textarea name="content" rows="5"></textarea>
+
+    <button>Submit</button>
+</form>
+</div>
+
+<!-- GENERATE ARGUMENT -->
+<div class="section">
+<h2>🤖 Generate Argument</h2>
+<form method="POST" action="/generate_argument">
+    <input type="text" name="topic" placeholder="Enter topic" required>
+
+    <select name="side">
+        <option value="Pro">Pro</option>
+        <option value="Con">Con</option>
+    </select>
+
+    <button type="submit">Generate</button>
+</form>
+</div>
+
+<!-- ARGUMENTS -->
+<div class="section">
+<h2>All Arguments</h2>
+
+{% for arg in arguments %}
+
+<div class="argument-card {% if loop.first %}strongest{% endif %}">
+
+    {% if loop.first %}
+        <h3>🏆 Strongest Argument</h3>
+    {% endif %}
+
+    <p><strong>Topic:</strong> {{ arg['title'] }}</p>
+
+    <p>
+        <span class="badge pro">User: {{ arg['side'] }}</span>
+        <span class="badge con">AI: {{ arg['predicted_side'] }}</span>
+    </p>
+
+    <p>
+        {% if arg['side']|lower == arg['predicted_side']|lower %}
+            <strong style="color:green;">✔ Match</strong>
+        {% else %}
+            <strong style="color:red;">✖ Mismatch</strong>
+        {% endif %}
+    </p>
+
+    <p><strong>Argument:</strong></p>
+
+    {% if arg['highlighted_text'] %}
+        <p>{{ arg['highlighted_text'] | safe }}</p>
+    {% else %}
+        <p>{{ arg['content'] }}</p>
+    {% endif %}
+
+
+    <p><strong>🤖 AI Opponent Reply:</strong></p>
+      <div style="background:#f3f4f6; padding:10px; border-radius:8px;">
+    {{ arg['ai_reply'] }}
+      </div>
+
+    <p><strong>User:</strong> {{ arg['username'] }}</p>
+    <p><strong>Relevance:</strong> {{ arg['relevance_score'] }}</p>
+    <p><strong>Evidence:</strong> {{ arg['evidence_score'] }}</p>
+    <p><strong>Strength:</strong> {{ arg['strength_score'] }}</p>
+
+    <p><strong>Quality:</strong> {{ arg['quality_label'] }}</p>
+    <p><strong>Toxicity:</strong> {{ arg['toxicity_label'] }}</p>
+
+    <p><strong>Fallacy:</strong> {{ arg['fallacy_label'] }}</p>
+    <p><strong>Explanation:</strong> {{ arg['fallacy_explanation'] }}</p>
+
+    <p><strong>Bias:</strong> {{ arg['bias_label'] }}</p>
+    <p><strong>Bias Explanation:</strong> {{ arg['bias_explanation'] }}</p>
+    
+    <p>
+        👍 {{ arg['upvotes'] }}
+        <a href="/vote/{{ arg['id'] }}/up">Upvote</a> |
+        👎 {{ arg['downvotes'] }}
+        <a href="/vote/{{ arg['id'] }}/down">Downvote</a>
+    </p>
+
+    <!-- COMMENTS -->
+    <h4>Comments</h4>
+    {% for comment in comments %}
+        {% if comment['argument_id'] == arg['id'] %}
+            <div class="comment">
+                {{ comment['content'] }}
+                <div class="meta">{{ comment['created_at'] }}</div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <form action="/add_comment" method="POST">
+        <input type="hidden" name="argument_id" value="{{ arg['id'] }}">
+        <input type="text" name="content" placeholder="Add comment..." required>
+        <button type="submit">Comment</button>
+    </form>
+
+    <!-- REPLIES -->
+    <h4>Opponent Arguments</h4>
+    {% for reply in replies %}
+        {% if reply['argument_id'] == arg['id'] %}
+            <div class="comment">
+                <b>{{ reply['side'] }}:</b> {{ reply['content'] }}
+                <div class="meta">{{ reply['created_at'] }}</div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <form action="/add_reply" method="POST">
+        <input type="hidden" name="argument_id" value="{{ arg['id'] }}">
+
+        <select name="side">
+            <option value="Pro">Pro</option>
+            <option value="Con">Con</option>
+        </select>
+
+        <input type="text" name="content" placeholder="Write counter argument..." required>
+        <button type="submit">Reply</button>
+    </form>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

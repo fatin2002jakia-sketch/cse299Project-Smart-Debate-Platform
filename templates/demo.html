@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preprocessing & TF-IDF Demo</title>
+</head>
+<body>
+    <h1>Demo: Preprocessing & TF-IDF</h1>
+    
+    <form method="POST">
+        <label>Topic:</label><br>
+        <input type="text" name="topic" size="50"><br><br>
+        
+        <label>Argument:</label><br>
+        <input type="text" name="argument" size="50"><br><br>
+        
+        <button type="submit">Run Demo</button>
+    </form>
+    
+    {% if result %}
+        <h2>Results:</h2>
+        <p><b>Original Topic:</b> {{ result.topic_original }}</p>
+        <p><b>Preprocessed Topic:</b> {{ result.topic_clean }}</p>
+        <p><b>Original Argument:</b> {{ result.argument_original }}</p>
+        <p><b>Preprocessed Argument:</b> {{ result.argument_clean }}</p>
+        <p><b>TF-IDF Features:</b> {{ result.tfidf_features }}</p>
+        <p><b>TF-IDF Vectors:</b> {{ result.tfidf_vectors }}</p>
+        <p><b>Cosine Similarity (Relevance Score):</b> {{ result.cosine_similarity }}</p>
+    {% endif %}
+</body>
+</html>

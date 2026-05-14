@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+
+    <style>
+        body { 
+            font-family: Arial; 
+            margin: 20px; 
+            background: #f7f8fc; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 16px; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+        }
+
+        a { 
+            text-decoration: none; 
+            color: #1f4ed8; 
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: white;
+        }
+
+        .strong { background: green; }
+        .medium { background: orange; }
+        .weak { background: red; }
+
+        .low { background: green; }
+        .high { background: red; }
+    </style>
+</head>
+
+<body>
+
+<h1>🏆 Top 10 Arguments</h1>
+<p><a href="/">← Back to Home</a></p>
+
+{% for arg in top_arguments %}
+    <div class="card">
+
+        <h3>{{ loop.index }}. {{ arg['title'] }}</h3>
+
+        <p><strong>Content:</strong> {{ arg['content'] }}</p>
+
+        <p><strong>Strength Score:</strong> {{ "%.2f"|format(arg['strength_score']) }}</p>
+
+        <!-- QUALITY -->
+        <p>
+            <strong>Quality:</strong>
+            {% if arg['quality_label'] == 'Strong' %}
+                <span class="badge strong">Strong</span>
+            {% elif arg['quality_label'] == 'Medium' %}
+                <span class="badge medium">Medium</span>
+            {% else %}
+                <span class="badge weak">Weak</span>
+            {% endif %}
+        </p>
+
+        <!-- TOXICITY -->
+        <p>
+            <strong>Toxicity:</strong>
+            {% if arg['toxicity_label'] == 'High' %}
+                <span class="badge high">High</span>
+            {% else %}
+                <span class="badge low">Low</span>
+            {% endif %}
+        </p>
+
+        <!-- FALLACY (FIXED) -->
+        <p>
+            <strong>Fallacy:</strong> {{ arg['fallacy_label'] }}
+        </p>
+
+        <p>
+            <strong>Explanation:</strong> {{ arg['fallacy_explanation'] }}
+        </p>
+
+
+        <p><strong>Bias:</strong> {{ arg['bias_label'] }}</p>
+        <p><strong>Explanation:</strong> {{ arg['bias_explanation'] }}</p>
+
+
+    </div>
+{% endfor %}
+
+</body>
+</html>
